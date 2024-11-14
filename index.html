@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TicTacToe</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; }
+    .board { display: grid; grid-template-columns: repeat(3, 100px); grid-gap: 5px; margin: 20px auto; }
+    .cell { width: 100px; height: 100px; font-size: 2em; display: flex; align-items: center; justify-content: center; cursor: pointer; background-color: #f0f0f0; }
+  </style>
+</head>
+<body>
+  <h1>TicTacToe</h1>
+  <div class="board" id="board"></div>
+  <p id="message"></p>
+  <button onclick="resetGame()">Reset</button>
+
+  <script>
+    const board = document.getElementById("board");
+    let cells = Array(9).fill(null);
+    let isXNext = true;
+
+    function renderBoard() {
+      board.innerHTML = '';
+      cells.forEach((cell, i) => {
+        const cellDiv = document.createElement("div");
+        cellDiv.className = "cell";
+        cellDiv.textContent = cell;
+        cellDiv.onclick = () => handleClick(i);
+        board.appendChild(cellDiv);
+      });
+    }
+
+    function handleClick(index) {
+      if (cells[index] || checkWinner()) return;
+      cells[index] = isXNext ? "X" : "O";
+      isXNext = !isXNext;
+      renderBoard();
+      const winner = checkWinner();
+      document.getElementById("message").textContent = winner ? `${winner} wins!` : isXNext ? "X's turn" : "O's turn";
+    }
+
+    function checkWinner() {
+      const winningCombinations = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6]
+      ];
+      for (let [a, b, c] of winningCombinations) {
+        if (cells[a] && cells[a] === cells[b] && cells[a] === cells[c]) {
+          return cells[a];
+        }
+      }
+      return cells.includes(null) ? null : "Draw";
+    }
+
+    function resetGame() {
+      cells = Array(9).fill(null);
+      isXNext = true;
+      document.getElementById("message").textContent = "X's turn";
+      renderBoard();
+    }
+
+    renderBoard();
+  </script>
+</body>
+</html>
